@@ -1,0 +1,34 @@
+{
+	"schemaVersion": 1,
+	"id": "nm-economy",
+	"version": "${version}",
+	"name": "NM Economy",
+	"description": "An economy mod for Minecraft.",
+	"authors": [
+		"Nick"
+	],
+	"contact": {
+		"homepage": "https://nicholasmuch.com/",
+		"sources": "https://github.com/FrozenTundraStudio"
+	},
+	"license": "CC0-1.0",
+	"icon": "assets/nm-economy/icon.png",
+	"environment": "*",
+	"entrypoints": {
+		"main": [
+			"com.nick.nmeconomy.NMEconomy"
+		],
+		"fabric-datagen": [
+			"com.nick.nmeconomy.NMEconomyDataGenerator"
+		]
+	},
+	"mixins": [
+		"nm-economy.mixins.json"
+	],
+	"depends": {
+		"fabricloader": ">=0.19.3",
+		"minecraft": "~26.2",
+		"java": ">=25",
+		"fabric-api": "*"
+	}
+}
