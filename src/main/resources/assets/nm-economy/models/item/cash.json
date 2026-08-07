@@ -1,6 +1,6 @@
 {
   "parent": "minecraft:item/generated",
   "textures": {
-    "layer0": "nm-economy:item/bank_note"
+    "layer0": "nm-economy:item/cash"
   }
 }

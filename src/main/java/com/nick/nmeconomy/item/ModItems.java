@@ -1,19 +1,22 @@
 package com.nick.nmeconomy.item;
 
 import com.nick.nmeconomy.NMEconomy;
-import net.fabricmc.fabric.api.creativetab.v1.CreativeModeTabEvents;
+import com.nick.nmeconomy.item.components.CashComponent;
+import com.nick.nmeconomy.item.components.ModComponents;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.Item;
 
 import java.util.function.Function;
 
 public class ModItems {
-    public static final Item BANK_NOTE = registerItem("bank_note",
+    public static final Item CASH = registerItem("cash",
+            properties -> new Item(properties.stacksTo(1).component(ModComponents.CASH_COMPONENT, new CashComponent(1))));
+
+    public static final Item WALLET = registerItem("wallet",
             properties -> new Item(properties.stacksTo(1)));
 
     private static Item registerItem(String name, Function<Item.Properties, Item> function) {
@@ -25,9 +28,6 @@ public class ModItems {
     public static void registerModItems() {
         NMEconomy.LOGGER.info("Registering Mod Items for " + NMEconomy.MOD_ID);
 
-        CreativeModeTabEvents.modifyOutputEvent(CreativeModeTabs.TOOLS_AND_UTILITIES).register(output -> {
-            output.accept(BANK_NOTE);
-        });
     }
 
 }

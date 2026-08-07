@@ -1,10 +1,12 @@
 {
-  "item.nm-economy.bank_note": "Bank Note",
+  "item.nm-economy.cash": "Cash",
   "item.nm-economy.credit_card": "Credit Card",
   "item.nm-economy.debit_card": "Debit Card",
   "item.nm-economy.wallet": "Wallet",
 
   "block.nm-economy.atm": "ATM",
 
-  "creativemodetab.nm-economy.nm-economy": "NM Economy"
+  "creativemodetab.nm-economy.nm-economy": "NM Economy",
+
+  "item.nm-economy.amount.info": "Amount: $%1$s"
 }

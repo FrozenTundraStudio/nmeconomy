@@ -14,11 +14,12 @@ import net.minecraft.world.item.ItemStack;
 public class ModCreativeModeTabs {
     public static final CreativeModeTab NMEconomyMod = Registry.register(BuiltInRegistries.CREATIVE_MODE_TAB,
             Identifier.fromNamespaceAndPath(NMEconomy.MOD_ID, "nm-economy"),
-            FabricCreativeModeTab.builder().icon(() -> new ItemStack(ModItems.BANK_NOTE))
+            FabricCreativeModeTab.builder().icon(() -> new ItemStack(ModItems.CASH))
                     .title(Component.translatable("creativemodetab.nm-economy.nm-economy"))
                     .displayItems((parameters, output) -> {
-                        output.accept(ModItems.BANK_NOTE);
+                        output.accept(ModItems.CASH);
                         output.accept(ModBlocks.ATM_BLOCK);
+                        output.accept(ModItems.WALLET);
 
                     }).build());
 

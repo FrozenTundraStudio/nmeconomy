@@ -18,21 +18,17 @@ public class ModBlocks {
 
 
     public static final Block ATM_BLOCK = registerBlock("atm",
-            properties -> new ATMBlock(properties.strength(3f).requiresCorrectToolForDrops()));
-
-
-
-
-    private static Block registerBlock(String name, Function<BlockBehaviour.Properties, Block> function) {
-        Block toRegister = function.apply(BlockBehaviour.Properties.of().setId(ResourceKey.create(Registries.BLOCK, Identifier.fromNamespaceAndPath(NMEconomy.MOD_ID, name))));
-        registerBlockItem(name, toRegister);
-        return Registry.register(BuiltInRegistries.BLOCK, Identifier.fromNamespaceAndPath(NMEconomy.MOD_ID, name), toRegister);
-    }
+            properties -> new ATMBlock(properties.strength(3f)));
 
     private static void registerBlockItem(String name, Block block) {
         Registry.register(BuiltInRegistries.ITEM, Identifier.fromNamespaceAndPath(NMEconomy.MOD_ID, name),
                 new BlockItem(block, new Item.Properties().useBlockDescriptionPrefix()
                         .setId(ResourceKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath(NMEconomy.MOD_ID, name)))));
+    }
+    private static Block registerBlock(String name, Function<BlockBehaviour.Properties, Block> function) {
+        Block toRegister = function.apply(BlockBehaviour.Properties.of().setId(ResourceKey.create(Registries.BLOCK, Identifier.fromNamespaceAndPath(NMEconomy.MOD_ID, name))));
+        registerBlockItem(name, toRegister);
+        return Registry.register(BuiltInRegistries.BLOCK, Identifier.fromNamespaceAndPath(NMEconomy.MOD_ID, name), toRegister);
     }
 
     public static void registerModBlocks() {

@@ -15,11 +15,9 @@ public class ModModelProvider extends FabricModelProvider {
 
     @Override
     public void generateBlockStateModels(BlockModelGenerators blockModelGenerators) {
-        blockModelGenerators.createNonTemplateModelBlock(ModBlocks.ATM_BLOCK);
     }
 
     @Override
     public void generateItemModels(ItemModelGenerators itemModelGenerators) {
-        itemModelGenerators.generateFlatItem(ModItems.BANK_NOTE, ModelTemplates.FLAT_ITEM);
     }
 }
