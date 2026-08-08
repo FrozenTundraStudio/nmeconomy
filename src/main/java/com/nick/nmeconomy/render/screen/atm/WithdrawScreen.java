@@ -1,11 +1,15 @@
 package com.nick.nmeconomy.render.screen.atm;
 
+import com.nick.nmeconomy.data.EconomyPlayer;
 import com.nick.nmeconomy.item.ModItems;
 import com.nick.nmeconomy.item.components.CashComponent;
 import com.nick.nmeconomy.item.components.ModComponents;
+import com.nick.nmeconomy.network.ServerboundDepositPayload;
+import com.nick.nmeconomy.network.ServerboundWithdrawPayload;
 import com.nick.nmeconomy.render.widgets.ATMBackgroundWidget;
 import com.nick.nmeconomy.render.widgets.DepositTextFieldWidget;
 import com.nick.nmeconomy.render.widgets.WithdrawTextFieldWidget;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
@@ -33,19 +37,9 @@ public class WithdrawScreen extends Screen {
         WithdrawTextFieldWidget withdrawTextFieldWidget = new WithdrawTextFieldWidget(font, this.width/2 - 75, this.height/2 - 35, 150, 25, Component.empty());
 
         Button withdrawWidget = Button.builder(Component.literal("Withdraw"), (btn) -> {
-            Player player = this.minecraft.player;
-            Item cash = ModItems.CASH;
-            ItemStack heldItem = this.minecraft.player.getMainHandItem();
-            Item cashItem = heldItem.getItem();
-            if (cashItem == ModItems.CASH) {
-                CashComponent heldCash = heldItem.get(ModComponents.CASH_COMPONENT);
-                int cashAmount = heldCash.amount();
-                int depositAmount = Integer.parseInt(withdrawTextFieldWidget.getValue());
-                int newCashAmount = cashAmount + depositAmount;
-                CashComponent cashComponent = new CashComponent(newCashAmount);
-                this.minecraft.player.getMainHandItem().set(ModComponents.CASH_COMPONENT, cashComponent);
-
-            }
+            int amount = Integer.parseInt(withdrawTextFieldWidget.getValue());
+            ServerboundWithdrawPayload payload = new ServerboundWithdrawPayload(amount);
+            ClientPlayNetworking.send(payload);
         }).bounds(this.width/2 - 35, this.height/2 + 30, 70, 20).build();
 
         Button mainMenuWidget = Button.builder(Component.literal("Main Menu"), (btn) -> {
@@ -56,12 +50,13 @@ public class WithdrawScreen extends Screen {
         this.addRenderableWidget(withdrawTextFieldWidget);
         this.addRenderableWidget(withdrawWidget);
         this.addRenderableWidget(mainMenuWidget);
-
     }
 
     @Override
     public void extractRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
         super.extractRenderState(graphics, mouseX, mouseY, a);
-
+        Player player = this.minecraft.player;
+        int balance = EconomyPlayer.get(player).getBalance();
+        graphics.text(this.font, "Balance: " + balance, this.width/2 - 35, this.height/2 - this.font.lineHeight - 60, 0xFFFFFFFF, true);
     }
 }

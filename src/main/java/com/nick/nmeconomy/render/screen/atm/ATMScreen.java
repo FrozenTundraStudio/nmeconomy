@@ -1,11 +1,13 @@
 package com.nick.nmeconomy.render.screen.atm;
 
+import com.nick.nmeconomy.data.EconomyPlayer;
 import com.nick.nmeconomy.render.widgets.ATMBackgroundWidget;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.player.Player;
 
 public class ATMScreen extends Screen {
     public ATMScreen(Component title) {
@@ -24,7 +26,10 @@ public class ATMScreen extends Screen {
         }).bounds(this.width/2 - 40, this.height/2 - 50, 80, 20).build();
 
         Button withdrawWidget = Button.builder(Component.literal("Withdraw"), (btn) -> {
-
+            Screen currentScreen = Minecraft.getInstance().gui.screen();
+            Minecraft.getInstance().setScreenAndShow(
+                    new WithdrawScreen(Component.empty(), currentScreen)
+            );
         }).bounds(this.width/2 - 40, this.height/2 - 10, 80, 20).build();
 
         Button closeWidget = Button.builder(Component.literal("Close"), (btn) -> {
@@ -40,6 +45,8 @@ public class ATMScreen extends Screen {
     @Override
     public void extractRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
         super.extractRenderState(graphics, mouseX, mouseY, a);
-
+        Player player = this.minecraft.player;
+        int balance = EconomyPlayer.get(player).getBalance();
+        graphics.text(this.font, "Balance: " + balance, this.width/2 - 35, this.height/2 - this.font.lineHeight - 80, 0xFFFFFFFF, true);
     }
 }

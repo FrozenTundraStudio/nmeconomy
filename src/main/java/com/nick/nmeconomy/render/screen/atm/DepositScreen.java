@@ -30,7 +30,6 @@ public class DepositScreen extends Screen {
         DepositTextFieldWidget depositTextFieldWidget = new DepositTextFieldWidget(font, this.width/2 - 75, this.height/2 - 35, 150, 25, Component.empty());
 
         Button depositWidget = Button.builder(Component.literal("Deposit"), (btn) -> {
-
             int amount = Integer.parseInt(depositTextFieldWidget.getValue());
             ServerboundDepositPayload payload = new ServerboundDepositPayload(amount);
             ClientPlayNetworking.send(payload);

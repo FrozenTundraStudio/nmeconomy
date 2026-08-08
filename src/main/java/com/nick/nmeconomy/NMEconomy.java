@@ -1,21 +1,22 @@
 package com.nick.nmeconomy;
 
+import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.nick.nmeconomy.block.ModBlocks;
+import com.nick.nmeconomy.command.ModCommands;
 import com.nick.nmeconomy.creativemodetab.ModCreativeModeTabs;
 import com.nick.nmeconomy.data.EconomyPlayer;
 import com.nick.nmeconomy.item.ModItems;
 import com.nick.nmeconomy.item.components.CashComponent;
 import com.nick.nmeconomy.item.components.ModComponents;
 import com.nick.nmeconomy.network.ServerboundDepositPayload;
+import com.nick.nmeconomy.network.ServerboundWithdrawPayload;
 import net.fabricmc.api.ModInitializer;
-
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.item.v1.ItemComponentTooltipProviderRegistry;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.commands.Commands;
 import net.minecraft.core.component.DataComponents;
-import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.Item;
@@ -31,12 +32,14 @@ public class NMEconomy implements ModInitializer {
 	public void onInitialize() {
 		EconomyPlayer.registerEconomyPlayer();
 		PayloadTypeRegistry.serverboundPlay().register(ServerboundDepositPayload.TYPE, ServerboundDepositPayload.CODEC);
+		PayloadTypeRegistry.serverboundPlay().register(ServerboundWithdrawPayload.TYPE, ServerboundWithdrawPayload.CODEC);
 		ModCreativeModeTabs.registerModCreativeModeTabs();
 		ModBlocks.registerModBlocks();
 		ModItems.registerModItems();
 		ModComponents.registerModComponents();
 		ItemComponentTooltipProviderRegistry.addAfter(DataComponents.DAMAGE, ModComponents.CASH_COMPONENT);
 
+		/* Deposit Receiver */
 		ServerPlayNetworking.registerGlobalReceiver(ServerboundDepositPayload.TYPE, (payload, context) -> {
 			ServerPlayer player = context.player();
 			ItemStack heldItem = player.getMainHandItem();
@@ -49,32 +52,56 @@ public class NMEconomy implements ModInitializer {
 				int balance = EconomyPlayer.get(player).getBalance();
 				int newBalance = balance + depositAmount;
 				EconomyPlayer.get(player).setBalance(newBalance);
+				if (newCashAmount <= 0) {
+					player.getInventory().removeItem(heldItem);
+				}
 				CashComponent cashComponent = new CashComponent(newCashAmount);
 				player.getMainHandItem().set(ModComponents.CASH_COMPONENT, cashComponent);
+            }
+		});
+
+		/* Withdraw Receiver */
+		ServerPlayNetworking.registerGlobalReceiver(ServerboundWithdrawPayload.TYPE, (payload, context) -> {
+			ServerPlayer player = context.player();
+			ItemStack heldItem = player.getMainHandItem();
+			Item cashItem = heldItem.getItem();
+			int withdrawnAmount = payload.amount();
+			int balance = EconomyPlayer.get(player).getBalance();
+			int newBalance = balance - withdrawnAmount;
+			EconomyPlayer.get(player).setBalance(newBalance);
+
+			if (cashItem == ModItems.CASH) {
+				CashComponent heldCash = heldItem.get(ModComponents.CASH_COMPONENT);
+				int cashAmount = heldCash.amount();
+				int newCashAmount = cashAmount + withdrawnAmount;
+				CashComponent cashComponent = new CashComponent(newCashAmount);
+				player.getMainHandItem().set(ModComponents.CASH_COMPONENT, cashComponent);
+			} else {
+				ItemStack newCashItem = new ItemStack(ModItems.CASH);
+				CashComponent cashComponent = new CashComponent(withdrawnAmount);
+				newCashItem.set(ModComponents.CASH_COMPONENT, cashComponent);
+				player.addItem(newCashItem);
 			}
 		});
 
+		/* Command Registration */
 		CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> {
-			dispatcher.register(Commands.literal("adddollar").executes(context -> {
-				ServerPlayer player = context.getSource().getPlayer();
-				int balance = EconomyPlayer.get(player).getBalance();
-				int newBalance = balance + 1;
-				EconomyPlayer.get(player).setBalance(newBalance);
-				context.getSource().sendSuccess(() -> Component.literal("Added. New balance is now: " + newBalance), false);
-				NMEconomy.LOGGER.info(player.getPlainTextName() + " Used /adddollar");
-				return 1;
-			}));
+			dispatcher.register(Commands.literal("addtobank")
+					.then(Commands.argument("amount", IntegerArgumentType.integer())
+							.executes(ModCommands::addToBankCommand)));
 		});
-
 		CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> {
-			dispatcher.register(Commands.literal("balance").executes(context -> {
-
-				ServerPlayer player = context.getSource().getPlayer();
-				int balance = EconomyPlayer.get(player).getBalance();
-				context.getSource().sendSuccess(() -> Component.literal("Balance: " + balance), false);
-				NMEconomy.LOGGER.info(player.getPlainTextName() + " Used /balance");
-				return 1;
-			}));
+			dispatcher.register(Commands.literal("balance")
+					.executes(ModCommands::balanceCommand));
+		});
+		CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> {
+			dispatcher.register(Commands.literal("split")
+					.then(Commands.argument("amount", IntegerArgumentType.integer())
+							.executes(ModCommands::splitCommand)));
+		});
+		CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> {
+			dispatcher.register(Commands.literal("combine")
+					.executes(ModCommands::combineCommand));
 		});
 	}
 
