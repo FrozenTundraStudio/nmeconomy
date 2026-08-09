@@ -4,7 +4,6 @@ import com.nick.nmeconomy.NMEconomy;
 import com.nick.nmeconomy.item.components.CashComponent;
 import com.nick.nmeconomy.item.components.ModComponents;
 import com.nick.nmeconomy.item.custom.Cash;
-import com.nick.nmeconomy.item.custom.Wallet;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
