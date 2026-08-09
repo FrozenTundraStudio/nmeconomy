@@ -23,7 +23,6 @@ public class ModCommands {
         int cashAmount = heldCash.amount();
         int splitAmount = IntegerArgumentType.getInteger(context, "amount");
         int newCashAmount = cashAmount - splitAmount;
-
         if (cashAmount > splitAmount) {
             if (cashItem == ModItems.CASH) {
                 CashComponent cashComponent = new CashComponent(newCashAmount);
@@ -63,7 +62,6 @@ public class ModCommands {
     public static int combineCommand(CommandContext<CommandSourceStack> context) {
         ServerPlayer player = context.getSource().getPlayer();
         int cashTotal = 0;
-
         for(ItemStack itemStack : player.getInventory()) {
             if(itemStack.is(ModItems.CASH)) {
                 CashComponent cashComponent = itemStack.get(ModComponents.CASH_COMPONENT);
@@ -72,7 +70,6 @@ public class ModCommands {
                 player.getInventory().removeItem(itemStack);
             }
         }
-
         ItemStack newCashItem = new ItemStack(ModItems.CASH);
         CashComponent newCashComponent = new CashComponent(cashTotal);
         newCashItem.set(ModComponents.CASH_COMPONENT, newCashComponent);

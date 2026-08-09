@@ -23,18 +23,18 @@ public class ATMScreen extends Screen {
             Minecraft.getInstance().setScreenAndShow(
                     new DepositScreen(Component.empty(), currentScreen)
             );
-        }).bounds(this.width/2 - 40, this.height/2 - 50, 80, 20).build();
+        }).bounds(this.width/2 - 40, this.height/2 - 10, 80, 20).build();
 
         Button withdrawWidget = Button.builder(Component.literal("Withdraw"), (btn) -> {
             Screen currentScreen = Minecraft.getInstance().gui.screen();
             Minecraft.getInstance().setScreenAndShow(
                     new WithdrawScreen(Component.empty(), currentScreen)
             );
-        }).bounds(this.width/2 - 40, this.height/2 - 10, 80, 20).build();
+        }).bounds(this.width/2 - 40, this.height/2 + 30, 80, 20).build();
 
         Button closeWidget = Button.builder(Component.literal("Close"), (btn) -> {
             Minecraft.getInstance().setScreenAndShow(null);
-        }).bounds(this.width/2 - 40, this.height/2 + 30, 80, 20).build();
+        }).bounds(this.width/2 - 40, this.height/2 + 70, 80, 20).build();
 
         this.addRenderableWidget(atmBackgroundWidget);
         this.addRenderableWidget(depositWidget);
@@ -45,8 +45,15 @@ public class ATMScreen extends Screen {
     @Override
     public void extractRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
         super.extractRenderState(graphics, mouseX, mouseY, a);
+
+        int rectangleX = this.width/2 - 60;
+        int rectangleY = this.height/2 - 73;
+        int rectangleWidth = 120;
+        int rectangleHeight = 15;
+        graphics.fill(rectangleX, rectangleY, rectangleX + rectangleWidth, rectangleY + rectangleHeight, 0xff000000);
+
         Player player = this.minecraft.player;
         int balance = EconomyPlayer.get(player).getBalance();
-        graphics.text(this.font, "Balance: " + balance, this.width/2 - 35, this.height/2 - this.font.lineHeight - 80, 0xFFFFFFFF, true);
+        graphics.text(this.font, "Balance: $" + balance, this.width/2 - 35, this.height/2 - this.font.lineHeight - 60, 0xFFFFFFFF, true);
     }
 }

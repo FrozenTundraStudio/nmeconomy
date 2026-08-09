@@ -67,22 +67,23 @@ public class NMEconomy implements ModInitializer {
 			Item cashItem = heldItem.getItem();
 			int withdrawnAmount = payload.amount();
 			int balance = EconomyPlayer.get(player).getBalance();
-			int newBalance = balance - withdrawnAmount;
-			EconomyPlayer.get(player).setBalance(newBalance);
-
-			if (cashItem == ModItems.CASH) {
-				CashComponent heldCash = heldItem.get(ModComponents.CASH_COMPONENT);
-				int cashAmount = heldCash.amount();
-				int newCashAmount = cashAmount + withdrawnAmount;
-				CashComponent cashComponent = new CashComponent(newCashAmount);
-				player.getMainHandItem().set(ModComponents.CASH_COMPONENT, cashComponent);
-			} else {
-				ItemStack newCashItem = new ItemStack(ModItems.CASH);
-				CashComponent cashComponent = new CashComponent(withdrawnAmount);
-				newCashItem.set(ModComponents.CASH_COMPONENT, cashComponent);
-				player.addItem(newCashItem);
-			}
-		});
+            if (withdrawnAmount <= balance) {
+                int newBalance = balance - withdrawnAmount;
+                EconomyPlayer.get(player).setBalance(newBalance);
+                if (cashItem == ModItems.CASH) {
+                    CashComponent heldCash = heldItem.get(ModComponents.CASH_COMPONENT);
+                    int cashAmount = heldCash.amount();
+                    int newCashAmount = cashAmount + withdrawnAmount;
+                    CashComponent cashComponent = new CashComponent(newCashAmount);
+                    player.getMainHandItem().set(ModComponents.CASH_COMPONENT, cashComponent);
+                } else {
+                    ItemStack newCashItem = new ItemStack(ModItems.CASH);
+                    CashComponent cashComponent = new CashComponent(withdrawnAmount);
+                    newCashItem.set(ModComponents.CASH_COMPONENT, cashComponent);
+                    player.addItem(newCashItem);
+                }
+            }
+        });
 
 		/* Command Registration */
 		CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> {

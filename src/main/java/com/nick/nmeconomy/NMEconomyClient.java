@@ -7,6 +7,5 @@ import net.minecraft.client.gui.screens.MenuScreens;
 public class NMEconomyClient implements ClientModInitializer {
     @Override
     public void onInitializeClient() {
-
     }
 }
