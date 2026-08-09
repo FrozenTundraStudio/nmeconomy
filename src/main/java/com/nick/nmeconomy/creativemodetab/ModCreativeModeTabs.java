@@ -20,6 +20,7 @@ public class ModCreativeModeTabs {
                         output.accept(ModItems.CASH);
                         output.accept(ModBlocks.ATM_BLOCK);
                         output.accept(ModItems.WALLET);
+                        output.accept(ModBlocks.WALLET_BLOCK);
 
                     }).build());
 

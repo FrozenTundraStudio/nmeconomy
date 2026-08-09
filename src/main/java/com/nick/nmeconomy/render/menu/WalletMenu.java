@@ -30,7 +30,7 @@ public class WalletMenu extends AbstractContainerMenu {
     }
 
     public WalletMenu(final int containerId, final Inventory inventory, final Container container) {
-        super(ModMenuTypes.WALLET, containerId);
+        super(ModMenuTypes.WALLET_BLOCK, containerId);
         checkContainerSize(container, SLOTS_COUNT);
         this.container = container;
 
@@ -67,13 +67,11 @@ public class WalletMenu extends AbstractContainerMenu {
         ItemStack clicked = stack.copy();
 
         if (slotIndex < CONTAINER_END) {
-
-            if (!this.moveItemStackTo(stack, INVENTORY_START, INVENTORY_END, true)) {
+            if (!this.moveItemStackTo(stack, INVENTORY_START, INVENTORY_END, /* backwards: */ true)) {
                 return ItemStack.EMPTY;
             }
         } else {
-
-            if (!this.moveItemStackTo(stack, CONTAINER_START, CONTAINER_END, false)) {
+            if (!this.moveItemStackTo(stack, CONTAINER_START, CONTAINER_END, /* backwards: */ false)) {
                 return ItemStack.EMPTY;
             }
         }

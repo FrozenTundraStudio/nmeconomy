@@ -2,6 +2,7 @@ package com.nick.nmeconomy;
 
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.nick.nmeconomy.block.ModBlocks;
+import com.nick.nmeconomy.block.entity.ModBlockEntities;
 import com.nick.nmeconomy.command.ModCommands;
 import com.nick.nmeconomy.creativemodetab.ModCreativeModeTabs;
 import com.nick.nmeconomy.data.EconomyPlayer;
@@ -10,11 +11,14 @@ import com.nick.nmeconomy.item.components.CashComponent;
 import com.nick.nmeconomy.item.components.ModComponents;
 import com.nick.nmeconomy.network.ServerboundDepositPayload;
 import com.nick.nmeconomy.network.ServerboundWithdrawPayload;
+import com.nick.nmeconomy.render.menu.ModMenuTypes;
+import com.nick.nmeconomy.render.screen.WalletScreen;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.item.v1.ItemComponentTooltipProviderRegistry;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
+import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.commands.Commands;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.resources.Identifier;
@@ -36,8 +40,11 @@ public class NMEconomy implements ModInitializer {
 		ModCreativeModeTabs.registerModCreativeModeTabs();
 		ModBlocks.registerModBlocks();
 		ModItems.registerModItems();
+		ModBlockEntities.initialize();
 		ModComponents.registerModComponents();
 		ItemComponentTooltipProviderRegistry.addAfter(DataComponents.DAMAGE, ModComponents.CASH_COMPONENT);
+		ModMenuTypes.initialize();
+		MenuScreens.register(ModMenuTypes.WALLET_BLOCK, WalletScreen::new);
 
 		/* Deposit Receiver */
 		ServerPlayNetworking.registerGlobalReceiver(ServerboundDepositPayload.TYPE, (payload, context) -> {

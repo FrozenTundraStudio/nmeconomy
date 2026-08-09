@@ -1,4 +1,4 @@
-package com.nick.nmeconomy.render.menu;
+package com.nick.nmeconomy.container;
 
 import net.minecraft.core.NonNullList;
 import net.minecraft.world.Container;
@@ -6,6 +6,11 @@ import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 
+/**
+ * A simple {@link Container} implementation with only default methods + an item list getter.
+ *
+ * @author Juuz
+ */
 public interface ImplementedContainer extends Container {
     /**
      * Retrieves the item list of this container.
@@ -87,7 +92,7 @@ public interface ImplementedContainer extends Container {
     }
 
     /**
-     * Replaces the current stack in an container slot with the provided stack.
+     * Replaces the current stack in a container slot with the provided stack.
      * @param slot  The container slot of which to replace the item stack.
      * @param stack The replacing item stack. If the stack is too big for
      *              this container ({@link Container#getMaxStackSize()}),

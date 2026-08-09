@@ -2,6 +2,7 @@ package com.nick.nmeconomy.block;
 
 import com.nick.nmeconomy.NMEconomy;
 import com.nick.nmeconomy.block.custom.ATMBlock;
+import com.nick.nmeconomy.block.custom.WalletBlock;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
@@ -16,9 +17,11 @@ import java.util.function.Function;
 
 public class ModBlocks {
 
-
     public static final Block ATM_BLOCK = registerBlock("atm",
             properties -> new ATMBlock(properties.strength(3f)));
+
+    public static final Block WALLET_BLOCK = registerBlock("wallet_block",
+            properties -> new WalletBlock(properties));
 
     private static void registerBlockItem(String name, Block block) {
         Registry.register(BuiltInRegistries.ITEM, Identifier.fromNamespaceAndPath(NMEconomy.MOD_ID, name),
